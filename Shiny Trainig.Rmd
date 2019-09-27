@@ -1,0 +1,96 @@
+---
+title: "Shiny Training"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+library(shiny)
+ui <- fluidPage(
+("Untargeted Sistem Suitability"))
+```
+
+# Input Functions
+# This adds buttons, sliders, file openers, lists and other interesting pieces to your shiny
+
+
+ui <- fluidPage(
+actionButton("Metabolite Based","Metabolite Based"),
+
+actionButton("Sum","Sum"), 
+
+sliderInput("num","Choose a number", min = 1, max = 100,value = 5),
+
+#actionButton("Sum Based",)
+
+
+fileInput("Choose file","Choose file")
+)
+```
+
+# Ouput Functions
+# This adds images, plots, tables and other interesting pieces to your shiny
+
+
+ui <- fluidPage(
+plotOutput("Timeline")
+
+)
+```
+#The above code only tells Shiny that an output named Timeline should be there, but does not specify the function. For that, we should use the server function. So we add:
+
+server <- function(input,output)
+
+#Rules for the server:
+##1 - Save objects to display outputs$
+
+server <- function(input,output) {
+output$hist <- # code
+}
+
+##2 - Build obects to display with render(interactive table, image, code block printed output...). The brackets in the end allows you to add many lines to personalize the plot
+ui <- fluidPage(
+plotOutput("Timeline"))
+server <- function(input,output) {
+output$hist <- renderPlot({
+  title <-"100 Random Normal Values"
+  hist(rnorm(100),main = title)
+  })
+}
+
+
+##3 - Use input values with input$ with the same name as the InputId of the slider ("Choose a number"), for example
+ui <- fluidPage(
+plotOutput("Timeline"))
+server <- function(input,output) {
+output$hist <- renderPlot({
+  title <-"100 Random Normal Values"
+  hist(rnorm(input$num),main = title)
+  })
+
+So:
+```{r}
+library(shiny)
+ui <- fluidPage(
+actionButton("Metabolite Based","Metabolite Based"),
+actionButton("Sum","Sum"), 
+("Untargeted Sistem Suitability"),
+sliderInput("num","Choose a number", min = 1, max = 100,value = 5),  
+plotOutput("hist"))
+
+server <- function(input,output){
+  output$hist <- renderPlot({
+  title <-"100 Random Normal Values"
+  hist(rnorm(input$num),main = title)
+  })}
+```
+
+# To run the Shiny
+```{r}
+shinyApp(ui = ui, server = server)
+```
+
